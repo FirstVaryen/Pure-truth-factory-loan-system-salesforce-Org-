@@ -99,6 +99,12 @@ in Experience Builder.
 
 ## Documentation
 
-Full project documentation — data model design, user stories, UAT test script, a complete technical
-change log of every fix made during development testing, and a condensed project summary — is
-maintained alongside this repository.
+Full project documentation lives in [`deliverables/`](deliverables/):
+
+- `00_Project_Brief.docx`
+- `01_Data_Model_Design.docx` (`_v2` is the latest revision)
+- `02_User_Stories.docx`
+- `03_Project_Progress_Presentation.pptx` (`_v5` is the latest revision)
+- `04_UAT_Test_Script.docx` — test cases plus a regression-checkpoint appendix of every issue found during build
+- `05_Technical_Change_Log.docx` — every CLI command, metadata diff, and data operation used to fix each issue
+- `06_Project_Summary.pdf` — 3-page condensed overview of the whole solution
