@@ -1,0 +1,11 @@
+Hello,
+
+Your loan repayment submission could not be verified.
+
+Amount Submitted: {!Loan_Repayment_Receipt__c.Amount__c}
+Payment Date: {!Loan_Repayment_Receipt__c.Payment_Date__c}
+
+Please check your bank receipt details and resubmit, or contact the Finance Department for assistance.
+
+Regards,
+Pure Truth Finance Department

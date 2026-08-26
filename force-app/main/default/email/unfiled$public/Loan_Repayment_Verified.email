@@ -1,0 +1,11 @@
+Hello,
+
+Your loan repayment has been verified and applied to your loan balance.
+
+Amount Paid: {!Loan_Repayment_Receipt__c.Amount__c}
+Payment Date: {!Loan_Repayment_Receipt__c.Payment_Date__c}
+
+Log in to the Employee Portal to see your updated outstanding balance.
+
+Regards,
+Pure Truth Finance Department

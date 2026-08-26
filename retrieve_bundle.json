@@ -1,0 +1,27 @@
+﻿{
+  "status": 0,
+  "result": {
+    "done": true,
+    "fileProperties": [
+      {
+        "createdById": "005fj00000KpJebAAF",
+        "createdByName": "Hillary Emmanuel",
+        "createdDate": "2026-08-25T02:04:59.838Z",
+        "fileName": "unpackaged/package.xml",
+        "fullName": "unpackaged/package.xml",
+        "id": "",
+        "lastModifiedById": "005fj00000KpJebAAF",
+        "lastModifiedByName": "Hillary Emmanuel",
+        "lastModifiedDate": "2026-08-25T02:04:59.838Z",
+        "manageableState": "unmanaged",
+        "type": "Package"
+      }
+    ],
+    "id": "09Sfj00000PVARKEA5",
+    "status": "Succeeded",
+    "success": true,
+    "messages": [],
+    "files": []
+  },
+  "warnings": []
+}

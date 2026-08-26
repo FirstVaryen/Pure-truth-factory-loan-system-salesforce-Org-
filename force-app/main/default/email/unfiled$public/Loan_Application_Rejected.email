@@ -1,0 +1,10 @@
+Hello,
+
+Your loan application has been reviewed and was not approved at this time.
+
+Loan Amount Requested: {!Loan_Application__c.Loan_Amount__c}
+
+If you have questions, please contact the Finance Department.
+
+Regards,
+Pure Truth Finance Department

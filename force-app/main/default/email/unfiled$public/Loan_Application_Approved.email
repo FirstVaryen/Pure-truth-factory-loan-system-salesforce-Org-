@@ -1,0 +1,12 @@
+Hello,
+
+Good news — your loan application has been approved.
+
+Loan Amount: {!Loan_Application__c.Loan_Amount__c}
+Term: {!Loan_Application__c.Loan_Duration__c} months
+Monthly Repayment: {!Loan_Application__c.Monthly_Loan_Repayment__c}
+
+You can log in to the Employee Portal at any time to view your loan status and submit repayments.
+
+Regards,
+Pure Truth Finance Department

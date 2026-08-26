@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <interviewLabel>Complete My Profile {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Complete My Profile</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_My_Account</name>
+        <label>Get My Account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Profile_Complete</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Portal_User__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <decisions>
+        <name>Check_Profile_Complete</name>
+        <label>Check Profile Complete</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>My_Details</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Needs Info</defaultConnectorLabel>
+        <rules>
+            <name>Is_Already_Complete</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_My_Account.Personal_Email__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Already_Complete</targetReference>
+            </connector>
+            <label>Is Already Complete</label>
+        </rules>
+    </decisions>
+    <assignments>
+        <name>Set_Email_On_Account</name>
+        <label>Set Email On Account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>Get_My_Account.Personal_Email__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Personal_Email</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_My_Account</targetReference>
+        </connector>
+    </assignments>
+    <recordUpdates>
+        <name>Update_My_Account</name>
+        <label>Update My Account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Profile_Confirmation</targetReference>
+        </connector>
+        <inputReference>Get_My_Account</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>My_Details</name>
+        <label>My Details</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Set_Email_On_Account</targetReference>
+        </connector>
+        <fields>
+            <name>Profile_Intro</name>
+            <fieldText>&lt;p&gt;Welcome! Please confirm your personal email so we can keep you updated on your loan applications and repayments.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>Personal_Email</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_My_Account.Personal_Email__c</elementReference>
+            </defaultValue>
+            <fieldText>Personal Email</fieldText>
+            <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Profile_Confirmation</name>
+        <label>Profile Confirmation</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Profile_Confirmation_Text</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Your profile has been updated.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;You're all set to apply for a loan.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Already_Complete</name>
+        <label>Already Complete</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Already_Complete_Text</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Your profile is complete.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;You're all set to apply for a loan.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_My_Account</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+</Flow>

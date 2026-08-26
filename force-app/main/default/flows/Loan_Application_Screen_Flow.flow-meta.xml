@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+
+    <choices>
+        <name>Reason_Travelling</name>
+        <choiceText>Travelling</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Travelling</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Reason_Hospitality</name>
+        <choiceText>Hospitality</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Hospitality</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Reason_MedicalBills</name>
+        <choiceText>Medical Bills</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Medical Bills</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Reason_Others</name>
+        <choiceText>Others</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Others</stringValue>
+        </value>
+    </choices>
+
+    <decisions>
+        <name>Check_Initial_Eligibility</name>
+        <label>Check Initial Eligibility</label>
+        <locationX>50</locationX>
+        <locationY>240</locationY>
+        <defaultConnector>
+            <targetReference>Loan_Details_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Eligible</defaultConnectorLabel>
+        <rules>
+            <name>Not_Active_Employee</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_My_Employee_Record.Active__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Yes</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Not_Eligible_Inactive_Screen</targetReference>
+            </connector>
+            <label>Not Active</label>
+        </rules>
+        <rules>
+            <name>Has_Active_Loan</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_My_Employee_Record.Loan_Balance__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Not_Eligible_Active_Loan_Screen</targetReference>
+            </connector>
+            <label>Has Active Loan</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Check_Affordability</name>
+        <label>Check Affordability</label>
+        <locationX>50</locationX>
+        <locationY>480</locationY>
+        <defaultConnector>
+            <targetReference>Create_Loan_Application</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Affordable</defaultConnectorLabel>
+        <rules>
+            <name>Not_Affordable</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>MonthlyDeductionEstimate</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>AffordabilityLimit</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Not_Affordable_Screen</targetReference>
+            </connector>
+            <label>Not Affordable</label>
+        </rules>
+    </decisions>
+
+    <formulas>
+        <name>MonthlyDeductionEstimate</name>
+        <dataType>Currency</dataType>
+        <expression>(({!LoanAmountInput} * 1.055) / {!TermInput})</expression>
+    </formulas>
+
+    <formulas>
+        <name>AffordabilityLimit</name>
+        <dataType>Currency</dataType>
+        <expression>({!Get_My_Employee_Record.Gross_payment__c} * 0.36)</expression>
+    </formulas>
+
+    <interviewLabel>Loan Application Screen Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Loan Application Screen Flow</label>
+    <processType>Flow</processType>
+
+    <recordCreates>
+        <name>Create_Loan_Application</name>
+        <label>Create Loan Application</label>
+        <locationX>50</locationX>
+        <locationY>600</locationY>
+        <connector>
+            <targetReference>Confirmation_Screen</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Applicant_Name__c</field>
+            <value>
+                <elementReference>Get_My_Employee_Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Loan_Amount__c</field>
+            <value>
+                <elementReference>LoanAmountInput</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Loan_Duration__c</field>
+            <value>
+                <elementReference>TermInput</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Loan_Reason__c</field>
+            <value>
+                <elementReference>ReasonInput</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Loan_Start_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Submitted</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Loan_Application__c</object>
+    </recordCreates>
+
+    <recordLookups>
+        <name>Get_Running_User</name>
+        <label>Get Running User</label>
+        <locationX>50</locationX>
+        <locationY>60</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_My_Employee_Record</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordLookups>
+        <name>Get_My_Employee_Record</name>
+        <label>Get My Employee Record</label>
+        <locationX>50</locationX>
+        <locationY>120</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Initial_Eligibility</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Running_User.AccountId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <screens>
+        <name>Not_Eligible_Inactive_Screen</name>
+        <label>Not Eligible - Inactive</label>
+        <locationX>250</locationX>
+        <locationY>360</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>InactiveMessage</name>
+            <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;Only active employees may apply for a loan. Please contact the Finance Department if you believe this is an error.&lt;/p&gt;</fieldText>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Not_Eligible_Active_Loan_Screen</name>
+        <label>Not Eligible - Active Loan</label>
+        <locationX>450</locationX>
+        <locationY>360</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ActiveLoanMessage</name>
+            <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;You already have an outstanding loan balance. You must fully repay your current loan before applying for a new one.&lt;/p&gt;</fieldText>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Loan_Details_Screen</name>
+        <label>Loan Details</label>
+        <locationX>50</locationX>
+        <locationY>360</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Check_Affordability</targetReference>
+        </connector>
+        <fields>
+            <name>LoanAmountInput</name>
+            <fieldType>InputField</fieldType>
+            <dataType>Currency</dataType>
+            <isRequired>true</isRequired>
+            <fieldText>Loan Amount</fieldText>
+        </fields>
+        <fields>
+            <name>TermInput</name>
+            <fieldType>InputField</fieldType>
+            <dataType>Number</dataType>
+            <scale>0</scale>
+            <isRequired>true</isRequired>
+            <fieldText>Term (Months)</fieldText>
+        </fields>
+        <fields>
+            <name>ReasonInput</name>
+            <choiceReferences>Reason_Travelling</choiceReferences>
+            <choiceReferences>Reason_Hospitality</choiceReferences>
+            <choiceReferences>Reason_MedicalBills</choiceReferences>
+            <choiceReferences>Reason_Others</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Loan Reason</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Not_Affordable_Screen</name>
+        <label>Not Affordable</label>
+        <locationX>250</locationX>
+        <locationY>600</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>NotAffordableMessage</name>
+            <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;This loan&amp;#39;s estimated monthly repayment ({!MonthlyDeductionEstimate}) exceeds 36% of your gross salary. Please reduce the amount or extend the term, then go back and try again.&lt;/p&gt;</fieldText>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Confirmation_Screen</name>
+        <label>Confirmation</label>
+        <locationX>50</locationX>
+        <locationY>720</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ConfirmationMessage</name>
+            <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;Your loan application has been submitted for review. You will be notified once the Finance Officer reviews it.&lt;/p&gt;</fieldText>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Running_User</targetReference>
+        </connector>
+    </start>
+
+    <status>Obsolete</status>
+</Flow>
