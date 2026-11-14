@@ -10,7 +10,7 @@ sf org login web --alias PureTruthDev --set-default   # only if the session erro
 ```
 
 - Org alias: `PureTruthDev`
-- Test portal user: `portal.tester@example.com` / `[removed]` (Stanley Howard, Factory Supervisor, Gross $1,800/mo)
+- Test portal user: `portal.tester@example.com` (password not stored in the repo) (Stanley Howard, Factory Supervisor, Gross $1,800/mo)
 - Site: `https://orgfarm-069ab8bab7-dev-ed.develop.my.site.com` (Network status still shows `UnderConstruction` — remember to click **Publish** in Builder after any page edit, separate from deploying metadata)
 - On Windows, `sf` commands sometimes fail via the Bash tool with `'C:\Program' is not recognized` — use PowerShell instead when that happens.
 

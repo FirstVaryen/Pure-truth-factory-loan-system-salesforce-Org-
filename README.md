@@ -99,6 +99,8 @@ in Experience Builder.
 
 ## Documentation
 
+> Repository maintenance (Nov 2026): a committed test password and personal emails were removed from the files and history. See [CHANGES.md](CHANGES.md).
+
 Full project documentation lives in [`deliverables/`](deliverables/):
 
 - `00_Project_Brief.docx`
